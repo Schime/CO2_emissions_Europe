@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        #chart-container {
+            position: relative;
+            margin-top: 50px;
+            overflow: hidden;
+        }
+        #chart {
+            float: left;
+            margin-top: -50px;
+        }
+        #info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background-color: white;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        #legend {
+            position: absolute;
+            top: 60px;
+            left: 20px;
+            z-index: 1000;
+            background-color: white;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+        #bar-chart-container, #compare-chart-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        #dropdown-container, #compare-dropdown-container {
+            margin-top: 10px;
+        }
+        #country-name {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        #compare-countries {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+    </style>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://d3js.org/topojson.v1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Projekt</title>
+</head>
+
+<body>
+    <h1>
+        Uvid u emisiju CO2 u državama Europe prema različitim faktorima
+    </h1>
+
+
+    <div id="main-container">
+        <div id="chart-container">
+            <div id="chart"></div>
+            <div id="info">Hover over a country to see its name and CO2 emissions.</div>
+            <div id="legend">
+                <div class="legend-item"><div class="legend-color" style="background-color: lightgreen;"></div><span>0 - 100,000</span></div>
+                <div class="legend-item"><div class="legend-color" style="background-color: yellow;"></div><span>100,000 - 500,000</span></div>
+                <div class="legend-item"><div class="legend-color" style="background-color: orange;"></div><span>500,000 - 1,000,000</span></div>
+                <div class="legend-item"><div class="legend-color" style="background-color: red;"></div><span>1,000,000 +</span></div>
+            </div>
+        </div>
+
+        <div id="charts-container">
+            <div id="bar-chart-container">
+                <h2>Country Data</h2>
+                <div id="country-name"></div>
+                <div id="dropdown-container">
+                    <label for="data-select-1">Select data 1: </label>
+                    <select id="data-select-1">
+                        <option value="Co2-Emissions">Co2-Emissions</option>
+                        <option value="Land Area(Km2)">Land Area(Km2)</option>
+                        <option value="GDP">GDP</option>
+                        <option value="Gasoline Price">Gasoline Price</option>
+                        <option value="Urban_population">Urban population</option>
+                        <option value="Population">Population</option>
+                    </select>
+                </div>
+                <div id="dropdown-container">
+                    <label for="data-select-2">Select data 2: </label>
+                    <select id="data-select-2">
+                        <option value="Co2-Emissions">Co2-Emissions</option>
+                        <option value="Land Area(Km2)">Land Area(Km2)</option>
+                        <option value="GDP">GDP</option>
+                        <option value="Gasoline Price">Gasoline Price</option>
+                        <option value="Urban_population">Urban population</option>
+                        <option value="Population">Population</option>
+                    </select>
+                </div>
+                <div id="bar-chart"></div>
+            </div>
+
+            <div id="compare-chart-container">
+                <h2>Compare Countries</h2>
+                <div id="compare-countries"></div>
+                <div id="compare-dropdown-container">
+                    <label for="compare-data-select">Select data: </label>
+                    <select id="compare-data-select">
+                        <option value="Co2-Emissions">Co2-Emissions</option>
+                        <option value="Land Area(Km2)">Land Area(Km2)</option>
+                        <option value="GDP">GDP</option>
+                        <option value="Gasoline Price">Gasoline Price</option>
+                        <option value="Urban_population">Urban population</option>
+                        <option value="Population">Population</option>
+                    </select>
+                </div>
+                <div id="compare-bar-chart"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var width = 1000;
+        var height = 1250;
+
+        var projection = d3.geo.mercator()
+            .center([10, 50])
+            .scale(700)
+            .translate([width / 2, height / 2]);
+
+        var path = d3.geo.path()
+            .projection(projection);
+
+        var svg = d3.select("#chart").append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .style("background", "#f0f0f0")
+            .call(d3.behavior.zoom().scaleExtent([0.3, 5])
+            .on("zoom", onZoom))
+            .append("g");
+
+        var info = d3.select("#info");
+        var countryName = d3.select("#country-name");
+        var compareCountries = d3.select("#compare-countries");
+
+        var selectedCountries = [];
+        var selectedData = [];
+
+        d3.json("europe_topology.json", function(error, europe) {
+            if (error) {
+                console.error("Error loading europe_topology.json:", error);
+                return;
+            }
+
+            var countries = topojson.feature(europe, europe.objects.europe);
+
+            d3.json("world-data-2023.json", function(error, data) {
+                if (error) {
+                    console.error("Error loading world-data-2023.json:", error);
+                    return;
+                }
+
+                var colorScale = d3.scale.linear()
+                    .domain([0, 100000, 500000, 1000000, 5000000])
+                    .range(["lightgreen", "yellow", "orange", "red"]);
+
+                svg.selectAll(".country")
+                    .data(countries.features)
+                    .enter().append("path")
+                    .attr("class", "country")
+                    .attr("d", path)
+                    .style("fill", function(d) {
+                        var countryData = data.find(function(entry) {
+                            return entry.Country === d.properties.NAME;
+                        });
+                        return countryData ? colorScale(parseFloat(countryData['Co2-Emissions'].replace(/,/g, ''))) : 'gray';
+                    })
+                    .style("stroke", "#999")
+                    .style("stroke-width", 1)
+                    .style("stroke-opacity", 1)
+                    .on("mouseover", function(d) {
+                        var countryData = data.find(function(entry) {
+                            return entry.Country === d.properties.NAME;
+                        });
+                        var infoText = countryData ? d.properties.NAME + ": " + countryData['Co2-Emissions'] + " CO2 emissions" : d.properties.NAME + ": Data not available";
+                        info.text(infoText);
+                        d3.select(this).style("cursor", "pointer");
+                    })
+                    .on("mouseout", function() {
+                        info.text("Hover over a country to see its name and CO2 emissions.");
+                        d3.select(this).style("cursor", "default");
+                    })
+                    .on("click", function(d) {
+                        var countryData = data.find(function(entry) {
+                            return entry.Country === d.properties.NAME;
+                        });
+                        if (countryData) {
+                            if (selectedCountries.length < 2) {
+                                selectedCountries.push(d.properties.NAME);
+                                selectedData.push(countryData);
+                                updateCompareChart(selectedData);
+                                compareCountries.text(selectedCountries.join(" vs "));
+                            } else {
+                                selectedCountries = [d.properties.NAME];
+                                selectedData = [countryData];
+                                updateCompareChart(selectedData);
+                                compareCountries.text(selectedCountries.join(" vs "));
+                            }
+                            countryName.text(d.properties.NAME);
+                            updateBarChart(countryData);
+                        }     
+                    });
+
+                function updateBarChart(countryData) {
+                    var selectedValue1 = d3.select("#data-select-1").property("value");
+                    var selectedValue2 = d3.select("#data-select-2").property("value");
+                    var barChartData = [
+                        { label: selectedValue1, value: parseFloat(countryData[selectedValue1].replace(/[^0-9.-]/g, '')) },
+                        { label: selectedValue2, value: parseFloat(countryData[selectedValue2].replace(/[^0-9.-]/g, '')) }
+                    ];
+
+                    var barChartWidth = 300;
+                    var barChartHeight = 300;
+                    var barPadding = 100;
+
+                    var xScale = d3.scale.ordinal()
+                        .domain(barChartData.map(function(d) { return d.label; }))
+                        .rangeRoundBands([0, barChartWidth], 0.1);
+
+                    var yScale = d3.scale.linear()
+                        .domain([0, d3.max(barChartData, function(d) { return d.value; })])
+                        .range([barChartHeight, 0]);
+
+                    var barChartSvg = d3.select("#bar-chart").html("").append("svg")
+                        .attr("width", barChartWidth + barPadding * 2)
+                        .attr("height", barChartHeight + barPadding * 2)
+                        .append("g")
+                        .attr("transform", "translate(" + barPadding + "," + barPadding + ")");
+
+                    barChartSvg.selectAll(".bar")
+                        .data(barChartData)
+                        .enter().append("rect")
+                        .attr("class", "bar")
+                        .attr("x", function(d) { return xScale(d.label); })
+                        .attr("width", xScale.rangeBand())
+                        .attr("y", barChartHeight)  // Start at the bottom
+                        .attr("height", 0)  // Start with zero height
+                        .transition()  // Transition from the bottom up
+                        .duration(1000)
+                        .attr("y", function(d) { return yScale(d.value); })
+                        .attr("height", function(d) { return barChartHeight - yScale(d.value); })
+                        .attr("fill", "steelblue");
+
+                    barChartSvg.selectAll(".label")
+                        .data(barChartData)
+                        .enter().append("text")
+                        .attr("class", "label")
+                        .attr("x", function(d) { return xScale(d.label) + xScale.rangeBand() / 2; })
+                        .attr("y", barChartHeight)  // Start at the bottom
+                        .attr("text-anchor", "middle")
+                        .transition()  // Transition from the bottom up
+                        .duration(1000)
+                        .attr("y", function(d) { return yScale(d.value) - 10; })
+                        .text(function(d) { return d3.format(",")(d.value); });
+
+                    barChartSvg.append("g")
+                        .attr("class", "x axis")
+                        .attr("transform", "translate(0," + barChartHeight + ")")
+                        .call(d3.svg.axis().scale(xScale).orient("bottom"));
+
+                    barChartSvg.append("g")
+                        .attr("class", "y axis")
+                        .call(d3.svg.axis().scale(yScale).orient("left").tickFormat(d3.format(",")));
+                }
+
+                function updateCompareChart(data) {
+                    var selectedValue = d3.select("#compare-data-select").property("value");
+                    var compareData = data.map(function(countryData) {
+                        return {
+                            label: countryData.Country,
+                            value: parseFloat(countryData[selectedValue].replace(/[^0-9.-]/g, ''))
+                        };
+                    });
+
+                    var barChartWidth = 300;
+                    var barChartHeight = 300;
+                    var barPadding = 100;
+
+                    var xScale = d3.scale.ordinal()
+                        .domain(compareData.map(function(d) { return d.label; }))
+                        .rangeRoundBands([0, barChartWidth], 0.1);
+
+                    var yScale = d3.scale.linear()
+                        .domain([0, d3.max(compareData, function(d) { return d.value; })])
+                        .range([barChartHeight, 0]);
+
+                    var barChartSvg = d3.select("#compare-bar-chart").html("").append("svg")
+                        .attr("width", barChartWidth + barPadding * 2)
+                        .attr("height", barChartHeight + barPadding * 2)
+                        .append("g")
+                        .attr("transform", "translate(" + barPadding + "," + barPadding + ")");
+
+                    barChartSvg.selectAll(".bar")
+                        .data(compareData)
+                        .enter().append("rect")
+                        .attr("class", "bar")
+                        .attr("x", function(d) { return xScale(d.label); })
+                        .attr("width", xScale.rangeBand())
+                        .attr("y", barChartHeight)  // Start at the bottom
+                        .attr("height", 0)  // Start with zero height
+                        .transition()  // Transition from the bottom up
+                        .duration(1000)
+                        .attr("y", function(d) { return yScale(d.value); })
+                        .attr("height", function(d) { return barChartHeight - yScale(d.value); })
+                        .attr("fill", function(d, i) { return i % 2 === 0 ? "steelblue" : "orange"; });
+
+                    barChartSvg.selectAll(".label")
+                        .data(compareData)
+                        .enter().append("text")
+                        .attr("class", "label")
+                        .attr("x", function(d) { return xScale(d.label) + xScale.rangeBand() / 2; })
+                        .attr("y", barChartHeight)  // Start at the bottom
+                        .attr("text-anchor", "middle")
+                        .transition()  // Transition from the bottom up
+                        .duration(1000)
+                        .attr("y", function(d) { return yScale(d.value) - 10; })
+                        .text(function(d) { return d3.format(",")(d.value); });
+
+                    barChartSvg.append("g")
+                        .attr("class", "x axis")
+                        .attr("transform", "translate(0," + barChartHeight + ")")
+                        .call(d3.svg.axis().scale(xScale).orient("bottom"));
+
+                    barChartSvg.append("g")
+                        .attr("class", "y axis")
+                        .call(d3.svg.axis().scale(yScale).orient("left").tickFormat(d3.format(",")));
+                }
+
+                d3.select("#data-select-1").on("change", function() {
+                    var selectedCountry = countryName.text();
+                    if (selectedCountry) {
+                        var countryData = data.find(function(entry) {
+                            return entry.Country === selectedCountry;
+                        });
+                        if (countryData) {
+                            updateBarChart(countryData);
+                        }
+                    }
+                });
+
+                d3.select("#data-select-2").on("change", function() {
+                    var selectedCountry = countryName.text();
+                    if (selectedCountry) {
+                        var countryData = data.find(function(entry) {
+                            return entry.Country === selectedCountry;
+                        });
+                        if (countryData) {
+                            updateBarChart(countryData);
+                        }
+                    }
+                });
+
+                d3.select("#compare-data-select").on("change", function() {
+                    if (selectedData.length > 0) {
+                        updateCompareChart(selectedData);
+                    }
+                });
+            });
+        });
+
+        function onZoom() {
+            svg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
+        }
+
+        
+    </script>
+</body>
+</html>

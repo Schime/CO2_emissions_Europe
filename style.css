@@ -1,0 +1,72 @@
+body {
+    font-size: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#main-container {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 20px;
+}
+
+#chart-container {
+    position: relative;
+    margin-top: 50px;
+    overflow: hidden;
+}
+
+#chart {
+    float: left;
+    margin-top: -50px;
+}
+
+#info, #legend {
+    position: absolute;
+    z-index: 1000;
+    background-color: white;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+#info {
+    top: 20px;
+    left: 20px;
+}
+
+#legend {
+    top: 60px;
+    left: 20px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+#charts-container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+}
+
+#bar-chart-container, #compare-chart-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#dropdown-container, #compare-dropdown-container {
+    margin-top: 10px;
+}
+
+#country-name, #compare-countries {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
