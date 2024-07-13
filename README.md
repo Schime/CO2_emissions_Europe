@@ -9,4 +9,5 @@ CO2EmissionsEurope/
 ├── style.css
 ├── europe_topology.json
 ├── world-data-2023.json
+└── README.md
 ```
