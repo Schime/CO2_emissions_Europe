@@ -22,7 +22,11 @@ CO2EmissionsEurope/
 ## Prerequisites
 To run this project, you need to have Python installed on your machine. You can download and install Python from [here](https://www.python.org/downloads/).
 
-
+## Instructions
+  1. Clone the Repository
+     ```
+     git clone <[CO2_emissions_Europe](https://github.com/Schime/CO2_emissions_Europe.git)>
+     ```
 
 
 
