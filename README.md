@@ -35,10 +35,10 @@ To run this project, you need to have Python installed on your machine. You can 
       ```
 
 # Project Structure
-  - index.html: Contains the HTML structure and D3.js scripts to render the map and charts
-  - style.css: Defines the styles for the HTML elements and ensures proper layout and design
-  - europe_topology.json: Topological data for European countries, necessary for rendering the map
-  - world-data-2023.json: Provides the dataset used for displaying various statistics in the visualization
+  - **index.html:** Contains the HTML structure and D3.js scripts to render the map and charts
+  - **style.css:** Defines the styles for the HTML elements and ensures proper layout and design
+  - **europe_topology.json:** Topological data for European countries, necessary for rendering the map
+  - **world-data-2023.json:** Provides the dataset used for displaying various statistics in the visualization
 
 # Functionalities
   - Map
