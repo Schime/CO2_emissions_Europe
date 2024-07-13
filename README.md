@@ -27,6 +27,12 @@ To run this project, you need to have Python installed on your machine. You can 
      ```
      git clone <https://github.com/Schime/CO2_emissions_Europe.git>
      ```
+  2. Start the HTTP Server
+     ```
+     python -m http.server
+     ```
+  3. Open the Browser
+     Open your browser and type 'localhost:8000' to view the website
 
 
 
