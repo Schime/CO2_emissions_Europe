@@ -3,8 +3,10 @@ This project provides a visualization of CO2 emissions in European countries bas
 
 # Project Structure
 ```
-index.html
-style.css
-europe_topology.json
-world-data-2023.json
+CO2EmissionsEurope/
+│
+├── index.html
+├── style.css
+├── europe_topology.json
+├── world-data-2023.json
 ```
