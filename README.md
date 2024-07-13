@@ -27,10 +27,10 @@ To run this project, you need to have Python installed on your machine. You can 
   - To open a website localy, from Visual Studio Code run the following commands
     - Locate a project folder using
       ```
-      cd "project_folder"
+      cd "project_folder_path_location"
       ```
     - Open the terminal in VS Code and run
-    - ```
+      ```
       python -m http.server
       ```
 
