@@ -52,7 +52,7 @@ To run this project, you need to have Python installed on your machine. You can 
     - Select different types of data (e.g., CO2 emissions, GDP, population) to display in the bar charts
 
 # Technologies Used
-  - **D3.js:**For creating dynamic and interactive data visualizations
+  - **D3.js:** For creating dynamic and interactive data visualizations
   - **TopoJSON:** For encoding geographic data and rendering the map
   - **HTML/CSS:** For structuring and styling the webpage
   - **Python:** For running a simple HTTP server to host the webpage
