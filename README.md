@@ -24,8 +24,11 @@ To run this project, you need to have Python installed on your machine. You can 
 
 ## Instructions
   - To view a website, open [this](https://schime.github.io/CO2_emissions_Europe/)
-  - To open a website localy, from Visual Studio Code run the following comamnds
-    - cd "project_folder"
+  - To open a website localy, from Visual Studio Code run the following commands
+    - Locate a project folder using
+      ```
+      cd "project_folder"
+      ```
     - Open the terminal in VS Code and run
     - ```
       python -m http.server
