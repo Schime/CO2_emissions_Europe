@@ -41,10 +41,23 @@ To run this project, you need to have Python installed on your machine. You can 
   - **world-data-2023.json:** Provides the dataset used for displaying various statistics in the visualization
 
 # Functionalities
-  - Map
+  - **Map**
     - Displays a map of Europe with countries color-coded based on CO2 emissions
     - Hover over a country to see its name and CO2 emissions
     - Click on a country to display detailed data and compare it with another country
-  - Bar Charts
+  - **Bar Charts**
     - Country Data: Shows a bar chart with selected data for a single country
-    - Compare Countries: Allows comparison of data between two selected countries.
+    - Compare Countries: Allows comparison of data between two selected countries
+  - **Dropdown Menus**
+    - Select different types of data (e.g., CO2 emissions, GDP, population) to display in the bar charts
+
+# Technologies Used
+  - **D3.js:**For creating dynamic and interactive data visualizations
+  - **TopoJSON:** For encoding geographic data and rendering the map
+  - **HTML/CSS:** For structuring and styling the webpage
+  - **Python:** For running a simple HTTP server to host the webpage
+
+
+
+
+
