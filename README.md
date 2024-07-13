@@ -1,4 +1,4 @@
-# **CO2 emissions visualization on Europe map**
+# CO2 emissions visualization on Europe map
 This project provides a visualization of CO2 emissions in European countries based on various factors. It includes interactive elements such as a map, bar charts, and dropdown menus to select and compare data for different countries.
 
 # Project Structure
@@ -25,11 +25,11 @@ To run this project, you need to have Python installed on your machine. You can 
 ## Instructions
   - To view a website, open [this](https://schime.github.io/CO2_emissions_Europe/)
   - To open a website localy, from Visual Studio Code run the following commands
-    - Locate a project folder using
+    - **Locate a project folder using**
       ```
       cd "project_folder_path_location"
       ```
-    - Open the terminal in VS Code and run
+    - **Open the terminal in VS Code and run**
       ```
       python -m http.server
       ```
