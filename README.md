@@ -34,6 +34,15 @@ To run this project, you need to have Python installed on your machine. You can 
       python -m http.server
       ```
 
+# Project Structure
+  - index.html: Contains the HTML structure and D3.js scripts to render the map and charts
+  - style.css: Defines the styles for the HTML elements and ensures proper layout and design
+  - europe_topology.json: Topological data for European countries, necessary for rendering the map
+  - world-data-2023.json: Provides the dataset used for displaying various statistics in the visualization
 
-
-
+# Functionalities
+  - Map
+    - Displays a map of Europe with countries color-coded based on CO2 emissions
+    - Hover over a country to see its name and CO2 emissions
+    - Click on a country to display detailed data and compare it with another country
+    - 
