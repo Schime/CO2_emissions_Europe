@@ -11,3 +11,18 @@ CO2EmissionsEurope/
 ├── world-data-2023.json
 └── README.md
 ```
+
+# Features
+  - Interactive map of Europe with CO2 emissions data
+  - Hover over countries to see CO2 emissions information
+  - Click on a country to view detailed data in a bar chart
+  - Compare data between two selected countries
+
+
+
+
+
+
+
+
+
