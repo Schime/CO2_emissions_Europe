@@ -18,7 +18,9 @@ CO2EmissionsEurope/
   - Click on a country to view detailed data in a bar chart
   - Compare data between two selected countries
 
-
+# Getting Started
+## Prerequisites
+To run this project, you need to have Python installed on your machine. You can download and install Python from [here](https://www.python.org/downloads/).
 
 
 
