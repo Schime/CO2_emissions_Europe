@@ -1,4 +1,4 @@
-# CO2 emissions visualization on Europe map
+# **CO2 emissions visualization on Europe map**
 This project provides a visualization of CO2 emissions in European countries based on various factors. It includes interactive elements such as a map, bar charts, and dropdown menus to select and compare data for different countries.
 
 # Project Structure
@@ -45,4 +45,6 @@ To run this project, you need to have Python installed on your machine. You can 
     - Displays a map of Europe with countries color-coded based on CO2 emissions
     - Hover over a country to see its name and CO2 emissions
     - Click on a country to display detailed data and compare it with another country
-    - 
+  - Bar Charts
+    - Country Data: Shows a bar chart with selected data for a single country
+    - Compare Countries: Allows comparison of data between two selected countries.
